@@ -1,3 +1,7 @@
+:root {
+  --site-login-color: 255, 165, 0;
+  --site-nav-height: 70px;
+}
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -10,4 +14,50 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.body-render {
+  max-height: calc(100vh - var(--site-nav-height));
+}
+
+/* 
+Site NavigationBar 
+*/
+
+#site-navbar {
+  max-height: var(--site-nav-height);
+  min-height: var(--site-nav-height);
+}
+
+#site-navbar .navbar-brand {
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  font-weight: bolder;
+}
+
+#site-navbar .navbar-brand span {
+  margin-left:.5rem;
+}
+
+#site-navbar .not-authenticated .btn-link {
+  color: rgb(var(--site-login-color),0.75);
+}
+
+#site-navbar .authenticated .nav-link {
+  color: rgb(var(--site-login-color));
+}
+
+/*
+  Carousel Header
+*/
+
+.header-carousel .carousel .carousel-item {
+  height: 500px;
+}
+
+.header-carousel .carousel-item img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-height: 300px;
 }
