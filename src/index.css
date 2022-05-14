@@ -62,7 +62,7 @@ Site NavigationBar
 #site-navbar .authenticated .nav-link {
   color: rgb(var(--site-login-color));
 }
-#site-navbar .nav-link::after {
+#site-navbar .nav-link:not(.dropdown-toggle)::after {
   content: '';
   width: 75%;
   position: relative;

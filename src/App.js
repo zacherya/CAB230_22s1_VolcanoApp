@@ -21,6 +21,9 @@ import Login from './views/Login';
 import Register from './views/Register';
 import DynamicError from './views/DynamicError';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function App() {
   return (
@@ -30,15 +33,16 @@ function App() {
         <NavbarComponent />
         <Routes>
           <Route index path="/" element={<Home />} />
-          <Route exact path="/Volcanos" element={<Volcanoes />}/>
+          <Route exact path="/Volcanoes" element={<Volcanoes />}/>
           <Route path="/Volcanoes/:id" element={<Volcanoes />} />
           <Route path="/About" element={<About />} />
           {/* <Route element={<DynamicError />} /> */}
         </Routes>
         {!authenticated ? (<Login show={loginModalStatus} onHide={()=>loginModalTrigger()} />):(null)}
         {!authenticated ? (<Register show={registerModalStatus} onHide={()=>registerModalTrigger()} />):(null)}
-        
+        <ToastContainer />
       </div>
+      
      )}
     </AuthConsumer>
   );

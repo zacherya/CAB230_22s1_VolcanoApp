@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useRef} from "react";
 import { Modal } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 import { InputGroup } from "react-bootstrap";
@@ -12,7 +12,8 @@ function Login(props) {
 
     const [showPassword, setShowPassword] = useState(false);
 
-    
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const triggerPasswordState = () => {
         setShowPassword(!showPassword);
@@ -33,7 +34,7 @@ function Login(props) {
                 Email
                 </Form.Label>
                 <Col sm="10">
-                <Form.Control type="text" placeholder="john.smith@volcanos.com"  />
+                <Form.Control type="text" placeholder="john.smith@volcanos.com" onChange={(e) => setEmail(e.target.value)} />
                 </Col>
             </Form.Group>
 
@@ -43,7 +44,7 @@ function Login(props) {
                 </Form.Label>
                 <Col sm="10">
                 <InputGroup className="mb-3">
-                    <Form.Control type={showPassword ? "text" : "password"} placeholder="Password" />
+                    <Form.Control type={showPassword ? "text" : "password"} placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
                     <Button variant="outline-secondary" id="button-addon2" onClick={triggerPasswordState}>
                         {showPassword ? <EyeSlashFill /> : <EyeFill />}
                     </Button>
@@ -54,7 +55,7 @@ function Login(props) {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="warning" onClick={()=>login(props.onHide)}> {/*props.onHide*/}
+        <Button variant="warning" onClick={()=>login(email,password)}> {/*props.onHide*/}
           Login
         </Button>
       </Modal.Footer>

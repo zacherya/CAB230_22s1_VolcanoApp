@@ -1,9 +1,14 @@
 
-import React, {createContext,useReducer,useEffect,useContext} from 'react'
+import React, {createContext,useReducer,useEffect} from 'react'
 import AuthReducer from '../helpers/AuthReducer'
+import { toast } from 'react-toastify';
 
+import AES from 'crypto-js/aes';
+import { enc } from 'crypto-js';
+
+const secret = 'cab230';
 const InitalState = {
-  user: JSON.parse(localStorage.getItem("user")) || null,
+  user: localStorage.getItem("user") ? JSON.parse(decrypt(localStorage.getItem("user"))) : null,
   isLoggingIn: false,
   error: false,
   showLoginModal: false,
@@ -16,35 +21,44 @@ function AuthProvider(props) {
   const [state, dispatch] = useReducer(AuthReducer, InitalState);
     
     useEffect(() => {
-      localStorage.setItem("user", JSON.stringify(state.user));
+      console.log("user set");
+      if(state.user !== null && state.user !== undefined){
+        localStorage.setItem("user", encrypt(JSON.stringify(state.user)));
+        toast.success(`Welcome ${state.user.email ?? "Unknown user"}`);
+      }
+      
     }, [state.user]);
 
-  // const activateSessionTimer = async (tokenTimeout) => {
-  //   setTimeout(() => {
-  //     console.log('Session Timer');
-  //   }, tokenTimeout)
-  // }
+  const activateSessionTimer = async (tokenTimeout) => {
+    setTimeout(() => {
+      detachSession();
+      toast.warning("Your session has expired. Please login again.");
+    }, tokenTimeout)
+  }
 
   const triggerLoginModal = () => {
     dispatch({type:"login_modal_trigger"});
-    // this.setState({ showRegisterModal: false, showLoginModal: !this.state.showLoginModal })
   }
   const triggerRegisterModal = () => {
     dispatch({type:"register_modal_trigger"});
-    // this.setState({ showLoginModal: false, showRegisterModal: !this.state.showRegisterModal })
   }
 
-  const login = (callback) => {
-    dispatch({type:"login_success"}, {email:"test@test.com",token:"123",token_type:"Bearer",expires_in:5000});
-    // setTimeout(() => {
-      
-    //   // activateSessionTimer(5000);
-    // }, 1000)
+  const login = (username,password) => {
+    //Add login promise here
+    dispatch({type:"login_success",payload:{email:username,token:"123",token_type:"Bearer",expires_in:5000}});
+    activateSessionTimer(5000);
+  }
+
+  const detachSession = () => {
+    dispatch({type:"logout"});
+    localStorage.removeItem("user");
   }
 
   const logout = () => {
-    // this.setState({ authenticated: false })
+    detachSession();
+    toast.success("Logout Successful");
   }
+
   return (
       <AuthContext.Provider
         value={{
@@ -61,6 +75,16 @@ function AuthProvider(props) {
         {props.children}
       </AuthContext.Provider>
     ) 
+}
+
+
+function encrypt(string) {
+  const ciphertext = AES.encrypt(string, secret);
+  return encodeURIComponent(ciphertext.toString());
+}
+function decrypt(string) {
+  const decodedStr = decodeURIComponent(string);
+  return AES.decrypt(decodedStr, secret).toString(enc.Utf8);
 }
 
 const AuthConsumer = AuthContext.Consumer

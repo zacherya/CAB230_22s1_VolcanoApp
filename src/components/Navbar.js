@@ -26,15 +26,13 @@ import {Link, NavLink} from "react-router-dom";
                         </Navbar.Brand>
                         <Nav className="me-auto">
                             <Nav.Link as={NavLink} to="/" className={({ isActive }) => (isActive ? 'active' : '')}>Home</Nav.Link>
-                            <Nav.Link as={NavLink} to="/Volcanoes" className={({ isActive }) => (isActive ? 'active' : '')}>Volcanos</Nav.Link>
+                            <Nav.Link as={NavLink} to="/Volcanoes" className={({ isActive }) => (isActive ? 'active' : '')}>Volcanoes</Nav.Link>
                             <Nav.Link as={NavLink} to="/About" className={({ isActive }) => (isActive ? 'active' : '')}>About</Nav.Link>
                         </Nav>
                         <Navbar.Toggle />
                         <Navbar.Collapse className="justify-content-end">
                             {authenticated ? (
-                                <NavDropdown className="authenticated" title={user.fullName} id="collasible-nav-dropdown">
-                                    <NavDropdown.Item as={Link} to="/Profile">Profile</NavDropdown.Item>
-                                    <NavDropdown.Divider />
+                                <NavDropdown className="authenticated" title={user.email} id="collasible-nav-dropdown">
                                     <NavDropdown.Item onClick={logout} className="text-danger">Logout</NavDropdown.Item>
                                 </NavDropdown>
                             ):(
