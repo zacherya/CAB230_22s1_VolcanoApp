@@ -6,7 +6,7 @@ import Button from 'react-bootstrap/Button';
 import Container from 'react-bootstrap/Container';
 import SiteLogo from '../assets/images/sitelogo.png';
 import { AuthConsumer } from '../services/AuthProvider';
-import {Link} from "react-router-dom";
+import {Link, NavLink} from "react-router-dom";
 
   function NavbarComponent() {
     return (
@@ -25,9 +25,9 @@ import {Link} from "react-router-dom";
                             <span>Volcanos</span>
                         </Navbar.Brand>
                         <Nav className="me-auto">
-                            <Nav.Link as={Link} to="/">Home</Nav.Link>
-                            <Nav.Link as={Link} to="/Volcanos">Volcanos</Nav.Link>
-                            <Nav.Link as={Link} to="/About">About</Nav.Link>
+                            <Nav.Link as={NavLink} to="/" className={({ isActive }) => (isActive ? 'active' : '')}>Home</Nav.Link>
+                            <Nav.Link as={NavLink} to="/Volcanoes" className={({ isActive }) => (isActive ? 'active' : '')}>Volcanos</Nav.Link>
+                            <Nav.Link as={NavLink} to="/About" className={({ isActive }) => (isActive ? 'active' : '')}>About</Nav.Link>
                         </Nav>
                         <Navbar.Toggle />
                         <Navbar.Collapse className="justify-content-end">
@@ -35,14 +35,14 @@ import {Link} from "react-router-dom";
                                 <NavDropdown className="authenticated" title={user.fullName} id="collasible-nav-dropdown">
                                     <NavDropdown.Item as={Link} to="/Profile">Profile</NavDropdown.Item>
                                     <NavDropdown.Divider />
-                                    <NavDropdown.Item as={Link} to="/Logout" className="text-danger">Logout</NavDropdown.Item>
+                                    <NavDropdown.Item onClick={logout} className="text-danger">Logout</NavDropdown.Item>
                                 </NavDropdown>
                             ):(
                                 <Navbar.Text className="not-authenticated">
-                                    <Button variant="link" onClick={loginModalTrigger}>
+                                    <Button variant="link" onClick={()=>loginModalTrigger()}>
                                         Login
                                     </Button>
-                                    <Button variant="link" onClick={registerModalTrigger}>
+                                    <Button variant="link" onClick={()=>registerModalTrigger()}>
                                         Register
                                     </Button>
                                 </Navbar.Text>

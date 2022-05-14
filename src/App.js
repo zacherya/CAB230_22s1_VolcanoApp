@@ -15,7 +15,7 @@ import RouteProtected from './helpers/RouteProtected';
 import { AuthConsumer } from './services/AuthProvider'
 
 import Home from './views/Home';
-import Volcanos from './views/Volcanos';
+import Volcanoes from './views/Volcanoes';
 import About from './views/About';
 import Login from './views/Login';
 import Register from './views/Register';
@@ -23,23 +23,20 @@ import DynamicError from './views/DynamicError';
 
 
 function App() {
-  // const [showlogin, setShowlogin] = useState(false);
-  
   return (
     <AuthConsumer>
      {({ authenticated, loginModalStatus,loginModalTrigger,registerModalStatus,registerModalTrigger }) => (
        <div className="App">
         <NavbarComponent />
         <Routes>
-            <Route index exact path="/" element={<Home />} />
-            <Route exact path="/Volcanos" element={<Volcanos />} />
-            <Route exact path="/About" element={<About />} />
-            
-            {/* <Route exact path="/Register" element={<Register />} /> */}
-            {/* <Route element={<DynamicError />} /> */}
-          </Routes>
-        {!authenticated ? (<Login show={loginModalStatus} onHide={loginModalTrigger} />):(null)}
-        {!authenticated ? (<Register show={registerModalStatus} onHide={registerModalTrigger} />):(null)}
+          <Route index path="/" element={<Home />} />
+          <Route exact path="/Volcanos" element={<Volcanoes />}/>
+          <Route path="/Volcanoes/:id" element={<Volcanoes />} />
+          <Route path="/About" element={<About />} />
+          {/* <Route element={<DynamicError />} /> */}
+        </Routes>
+        {!authenticated ? (<Login show={loginModalStatus} onHide={()=>loginModalTrigger()} />):(null)}
+        {!authenticated ? (<Register show={registerModalStatus} onHide={()=>registerModalTrigger()} />):(null)}
         
       </div>
      )}

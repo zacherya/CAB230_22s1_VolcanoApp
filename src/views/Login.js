@@ -6,6 +6,7 @@ import {Form} from "react-bootstrap";
 import {Row} from "react-bootstrap";
 import {Col} from "react-bootstrap";
 import { EyeFill, EyeSlashFill } from "react-bootstrap-icons";
+import { AuthConsumer } from "../services/AuthProvider";
 
 function Login(props) {
 
@@ -18,6 +19,9 @@ function Login(props) {
     }
 
     return (
+      <AuthConsumer>
+        {({ login, authenticated }) => (
+          
         <Modal {...props}>
       <Modal.Header closeButton>
         <Modal.Title>Login to Volcanos</Modal.Title>
@@ -50,11 +54,13 @@ function Login(props) {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="warning" onClick={props.onHide}>
+        <Button variant="warning" onClick={()=>login(props.onHide)}> {/*props.onHide*/}
           Login
         </Button>
       </Modal.Footer>
     </Modal>
+        )}
+    </AuthConsumer>
     );
 }
 

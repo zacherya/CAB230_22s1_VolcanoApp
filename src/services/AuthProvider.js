@@ -1,59 +1,66 @@
-import React from 'react'
 
-const AuthContext = React.createContext()
+import React, {createContext,useReducer,useEffect,useContext} from 'react'
+import AuthReducer from '../helpers/AuthReducer'
 
-class AuthProvider extends React.Component {
-  state = { 
-      authenticated: false,
-      user: {
-          fullName: 'John Smith',
-          email: 'test@test.com',
-      },
-      showLoginModal: false,
-      showRegisterModal: false,
-    }
+const InitalState = {
+  user: JSON.parse(localStorage.getItem("user")) || null,
+  isLoggingIn: false,
+  error: false,
+  showLoginModal: false,
+  showRegisterModal: false,
+};
 
-  constructor() {
-    super()
-    this.login = this.login.bind(this)
-    this.logout = this.logout.bind(this)
-    this.triggerLoginModal = this.triggerLoginModal.bind(this)
-    this.triggerRegisterModal = this.triggerRegisterModal.bind(this)
+const AuthContext = createContext(InitalState);
+
+function AuthProvider(props) {
+  const [state, dispatch] = useReducer(AuthReducer, InitalState);
+    
+    useEffect(() => {
+      localStorage.setItem("user", JSON.stringify(state.user));
+    }, [state.user]);
+
+  // const activateSessionTimer = async (tokenTimeout) => {
+  //   setTimeout(() => {
+  //     console.log('Session Timer');
+  //   }, tokenTimeout)
+  // }
+
+  const triggerLoginModal = () => {
+    dispatch({type:"login_modal_trigger"});
+    // this.setState({ showRegisterModal: false, showLoginModal: !this.state.showLoginModal })
+  }
+  const triggerRegisterModal = () => {
+    dispatch({type:"register_modal_trigger"});
+    // this.setState({ showLoginModal: false, showRegisterModal: !this.state.showRegisterModal })
   }
 
-  triggerLoginModal() {
-    this.setState({ showRegisterModal: false, showLoginModal: !this.state.showLoginModal })
-  }
-  triggerRegisterModal() {
-    this.setState({ showLoginModal: false, showRegisterModal: !this.state.showRegisterModal })
-  }
-
-  login() {
-    setTimeout(() => this.setState({ authenticated: true }), 1000)
+  const login = (callback) => {
+    dispatch({type:"login_success"}, {email:"test@test.com",token:"123",token_type:"Bearer",expires_in:5000});
+    // setTimeout(() => {
+      
+    //   // activateSessionTimer(5000);
+    // }, 1000)
   }
 
-  logout() {
-    this.setState({ authenticated: false })
+  const logout = () => {
+    // this.setState({ authenticated: false })
   }
-
-  render() {
-    return (
+  return (
       <AuthContext.Provider
         value={{
-            authenticated: this.state.authenticated,
-            user: this.state.user,
-            login: this.login,
-            logout: this.logout,
-            loginModalTrigger: this.triggerLoginModal,
-            registerModalTrigger: this.triggerRegisterModal,
-            loginModalStatus: this.state.showLoginModal,
-            registerModalStatus: this.state.showRegisterModal,
+            authenticated: !(state.user === null || state.user === undefined),
+            user: state.user,
+            login: login,
+            logout: logout,
+            loginModalTrigger: triggerLoginModal,
+            registerModalTrigger: triggerRegisterModal,
+            loginModalStatus: state.showLoginModal,
+            registerModalStatus: state.showRegisterModal,
         }}
       >
-        {this.props.children}
+        {props.children}
       </AuthContext.Provider>
-    )
-  }
+    ) 
 }
 
 const AuthConsumer = AuthContext.Consumer

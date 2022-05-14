@@ -15,9 +15,25 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
 .body-render {
+  text-align: left;
   max-height: calc(100vh - var(--site-nav-height));
+  padding: 1rem;
+}
+
+.body-render > .container > .row > div {
+  text-align: center;
+  display: flex;
+  justify-items: center;
+  /* align-items: center; */
+}
+.site-branding {
+  margin-bottom:.5rem;
+}
+.site-title {
+  text-transform: uppercase;
+  font-weight: bolder;
+  margin: 0 1rem;
 }
 
 /* 
@@ -46,11 +62,33 @@ Site NavigationBar
 #site-navbar .authenticated .nav-link {
   color: rgb(var(--site-login-color));
 }
+#site-navbar .nav-link::after {
+  content: '';
+  width: 75%;
+  position: relative;
+  bottom: -14px;
+  opacity: 0;
+  display: block;
+  left: 0;
+  right: 0;
+  background-color: rgb(var(--site-login-color));
+  height: 4px;
+  border-radius: 4px;
+  transition: cubic-bezier(0.075, 0.82, 0.165, 1) 1.5s;
+}
+#site-navbar .nav-link.active::after {
+  width: 100%;
+  bottom: -8px;
+  opacity: 1;
+}
 
 /*
   Carousel Header
 */
-
+.header-carousel {
+  margin: -1rem;
+  margin-bottom:4.25rem;
+}
 .header-carousel .carousel .carousel-item {
   height: 500px;
 }
@@ -60,4 +98,33 @@ Site NavigationBar
   top: 0;
   left: 0;
   min-height: 300px;
+  transform: translateY(-40%);
 }
+
+/*
+  ListGroup Overrides
+  */
+  .list-group-item.active {
+    background-color: rgb(var(--site-login-color)) !important;
+    border-color: rgb(var(--site-login-color)) !important;
+  }
+
+  /*
+  Slide Overlay
+  */
+  .slide-overlay-container {
+    height:calc(100vh - var(--site-nav-height));
+    width:100vw;
+    overflow: hidden;
+  }
+
+  .slide-overlay-container > * {
+    padding:2rem;
+    height:100%;
+    width:100%;
+  }
+
+  .slide-overlay-flyover {
+    position: absolute;
+
+  }
