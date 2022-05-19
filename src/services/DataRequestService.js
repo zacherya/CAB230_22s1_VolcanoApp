@@ -1,45 +1,75 @@
-export default class DataRequestService {
+import React, {useContext} from "react";
+import { toast } from 'react-toastify';
+
+import { AuthConsumer } from "./AuthProvider";
+
+import { encrypt, decrypt } from "../helpers/Crypto";
+
+const API_URL = "http://sefdb02.qut.edu.au:3001";
+
+export default class DataService {
     constructor() {
-        this.data = {};
-        this.data.volcanoes = [];
-        this.data.volcanoes.push({
-            id: 1,
-            name: "Mount Fuji",
-            description: "The highest volcano in Japan",
-            lat: 35.3608,
-            lng: 138.7271,
-            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Mount_Fuji_from_Hakone_Park.jpg/1200px-Mount_Fuji_from_Hakone_Park.jpg"
-        });
-        this.data.volcanoes.push({
-            id: 2,
-            name: "Mount Etna",
-            description: "The highest volcano in Italy",
-            lat: 37.5667,
-            lng: 14.75,
-            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Etna_Volcano_from_the_Island_of_Etna.jpg/1200px-Etna_Volcano_from_the_Island_of_Etna.jpg"
-        });
-        this.data.volcanoes.push({
-            id: 3,
-            name: "Mount Yasur",
-            description: "The highest volcano in Turkey",
-            lat: 38.7167,
-            lng: 27.9667,
-            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Yasur_Volcano.jpg/1200px-Yasur_Volcano.jpg"
-        });
-        this.data.volcanoes.push({
-            id: 4,
-            name: "Mount Krakatau",
-            description: "The highest volcano in Indonesia",
-            lat: -6.9167,
-            lng: 107.6,
-            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Krakatau_Volcano.jpg/1200px-Krakatau_Volcano.jpg"
-        });
+        this.Req = this.Req.bind(this);
+        this.Get = this.Get.bind(this);
+        this.Post = this.Post.bind(this);
     }
-    getVolcanoes() {
-        return this.data.volcanoes;
+    async Req(endpoint,payload) {
+        switch (endpoint.method) {
+            case "GET":
+                return await this.Get("{0}{1}".format(API_URL,endpoint.url),Headers(),payload);
+            case "POST":
+                return await this.Post("{0}{1}".format(API_URL,endpoint.url),Headers(),payload);
+            default:
+                return await this.Get("{0}{1}".format(API_URL,endpoint.url??""),Headers(),payload);
+        }
     }
-    getVolcano(id) {
-        return this.data.volcanoes.find(v => v.id === id);
+    async Get(url, headers,payload) {
+        return await fetch("{0}{1}".format(url,queryBuilder(payload)), {
+            method: "GET",
+            headers: headers
+        })
+            // .then(response => response.json())
+            .catch(error => {
+                toast.error("An unexpected error has occurred: " + error.name);
+                console.log(error);
+            });
     }
-    
+    async Post(url,headers,payload) {
+        return await fetch(url, {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify(payload)
+        })
+            // .then(response => response.json())
+            .catch(error => {
+                toast.error("An unexpected error has occurred: " + error.name);
+                console.log(error);
+            });
+    }
 }
+
+function queryBuilder(payload) {
+    if(payload === undefined || payload === null) {
+        return "";
+    }
+    const params = new URLSearchParams();
+    Object.keys(payload).forEach(key => {
+        params.append(key, payload[key]);
+    });
+    return "?"+params.toString();
+}
+
+function handleStatusCode() {
+
+}
+
+function Headers() {
+    var headers = {
+        "Content-Type": "application/json"
+    };
+    if (localStorage.getItem("user")) {
+        headers["Authorization"] = `Bearer ${JSON.parse(decrypt(localStorage.getItem("user"))).token}`;
+    }
+    return headers;
+}
+

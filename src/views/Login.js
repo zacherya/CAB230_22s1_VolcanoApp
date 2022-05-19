@@ -19,6 +19,16 @@ function Login(props) {
         setShowPassword(!showPassword);
     }
 
+    let submitBtn = useRef(null);
+
+    const handleKeyEvent = (e) => {
+      if (e.key === "Enter") {
+                          e.preventDefault();
+                          console.log(submitBtn)
+                          submitBtn.current.click();
+                        }
+    };
+
     return (
       <AuthConsumer>
         {({ login, authenticated }) => (
@@ -28,7 +38,7 @@ function Login(props) {
         <Modal.Title>Login to Volcanos</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form>
+
             <Form.Group as={Row} className="mb-3" controlId="formPlaintextEmail">
                 <Form.Label column sm="2">
                 Email
@@ -44,7 +54,7 @@ function Login(props) {
                 </Form.Label>
                 <Col sm="10">
                 <InputGroup className="mb-3">
-                    <Form.Control type={showPassword ? "text" : "password"} placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
+                    <Form.Control type={showPassword ? "text" : "password"} placeholder="Password" onChange={(e) => setPassword(e.target.value)} onKeyPress={(e) => handleKeyEvent(e)} />
                     <Button variant="outline-secondary" id="button-addon2" onClick={triggerPasswordState}>
                         {showPassword ? <EyeSlashFill /> : <EyeFill />}
                     </Button>
@@ -52,10 +62,10 @@ function Login(props) {
                 
                 </Col>
             </Form.Group>
-        </Form>
+
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="warning" onClick={()=>login(email,password)}> {/*props.onHide*/}
+        <Button variant="warning" ref={submitBtn} onClick={()=>login(email,password)}> {/*props.onHide*/}
           Login
         </Button>
       </Modal.Footer>
