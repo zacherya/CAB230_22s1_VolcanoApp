@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, StrictMode} from "react";
 import { Col, Row, Container } from "react-bootstrap";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import {
@@ -21,7 +21,8 @@ function Volcano() {
 
 
     return (
-        (id === undefined) ? (<VolcanoList />) : (<VolcanoView id={id} />)
+      (id === undefined) ? (<VolcanoList />) : (<VolcanoView id={id} />)
+        
         // (id === "bob") ? (<Navigate to="/Volcanos" replace />) : (null)
         // <div className="slide-overlay-container">
         //     <div className="slide-overlay-foreground">

@@ -28,11 +28,16 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
+.fly-in {
+  transform: translateX(100%);
+  animation: slideFrameIn .25s ease-out 0s 1 forwards;
+}
+
+@keyframes slideFrameIn {
   from {
-    transform: rotate(0deg);
+    transform: translateX(100%);
   }
   to {
-    transform: rotate(360deg);
+    transform: translateX(0);
   }
 }

@@ -4,6 +4,7 @@ import './index.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import "react-widgets/styles.css";
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter as Router} from "react-router-dom";
