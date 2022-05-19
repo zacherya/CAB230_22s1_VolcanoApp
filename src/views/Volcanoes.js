@@ -21,8 +21,8 @@ function Volcano() {
 
 
     return (
-        // (id === undefined) ? (<VolcanoList />) : (<VolcanoView id={id} />)
-        (id === "bob") ? (<Navigate to="/Volcanos" replace />) : (null)
+        (id === undefined) ? (<VolcanoList />) : (<VolcanoView id={id} />)
+        // (id === "bob") ? (<Navigate to="/Volcanos" replace />) : (null)
         // <div className="slide-overlay-container">
         //     <div className="slide-overlay-foreground">
         //         <VolcanoList />

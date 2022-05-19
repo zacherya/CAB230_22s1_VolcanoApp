@@ -49,7 +49,7 @@ function AuthProvider(props) {
     timeout = setTimeout(() => {
         detachSession();
         toast.warning("Your session has expired. Please login again.");
-    }, tokenTimeout)
+    }, tokenTimeout*1000);
   }
 
   const triggerLoginModal = () => {
