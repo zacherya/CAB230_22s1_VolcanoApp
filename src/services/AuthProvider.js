@@ -31,9 +31,9 @@ function AuthProvider(props) {
 
   useEffect(() => {
     return () => {
-      console.log("user set");
       clearSessionTimeout();
       if (state.user !== null && state.user !== undefined) {
+        console.log("user set");
         localStorage.setItem("user", encrypt(JSON.stringify(state.user)));
         activateSessionTimer(state.user.expires_in);
       }
@@ -62,7 +62,6 @@ function AuthProvider(props) {
   const login = async (username, password) => {
     console.log("login");
     //Add login promise here
-    dispatch({ type: "login_process" });
     const req = await dataService.Req(LoginEp, {
       email: username,
       password: password,
@@ -94,9 +93,36 @@ function AuthProvider(props) {
     // activateSessionTimer(5000*10);
   };
 
+  const register = async (username, password) => {
+    console.log("register");
+    //Add login promise here
+    dispatch({ type: "login_process" });
+    const req = await dataService.Req(RegisterEp, {
+      email: username,
+      password: password,
+    });
+    switch (req.status) {
+      case 201:
+        triggerRegisterModal();
+        toast.success("Registration successful. Please login.");
+        break;
+      case 409:
+        toast.error("This user already exists. Try logging in.");
+        break;
+      case 400:
+        toast.error("Either your username or password is missing.");
+        break;
+      default:
+        console.log(req);
+        break;
+    }
+    // activateSessionTimer(5000*10);
+  };
+
   const detachSession = () => {
-    dispatch({ type: "logout" });
     localStorage.removeItem("user");
+    localStorage.clear();
+    dispatch({ type: "logout" });
   };
 
   const logout = () => {
@@ -111,6 +137,7 @@ function AuthProvider(props) {
         user: state.user,
         login: login,
         logout: logout,
+        register: register,
         loginModalTrigger: triggerLoginModal,
         registerModalTrigger: triggerRegisterModal,
         loginModalStatus: state.showLoginModal,

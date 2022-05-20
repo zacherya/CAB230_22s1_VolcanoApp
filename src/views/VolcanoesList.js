@@ -6,6 +6,7 @@ import DataService from "../services/DataRequestService";
 import { toast } from "react-toastify";
 import DropdownList from "react-widgets/DropdownList";
 import Listbox from "react-widgets/Listbox";
+import DynamicError from "../views/DynamicError";
 import {
   BrowserRouter as Router,
   Routes,
@@ -19,6 +20,8 @@ const CountriesEp = Endpoints().countries().all();
 const VolcanoListEp = Endpoints().volcanoes().all();
 
 const dataService = new DataService();
+
+const renderError = false;
 
 function VolcanoList() {
   const { id } = useParams();
@@ -195,22 +198,23 @@ async function fetchVolcanos(country, range) {
 }
 
 async function fetchCountries() {
-  const req = await dataService.Req(CountriesEp);
-  switch (req.status) {
-    case 200:
-      const data = await req.json();
-      return data;
-    case 401:
-      toast.error("Invalid username or password. Try again.");
-      break;
-    case 400:
-      toast.error("Country is a required query parameter.");
-      break;
-    default:
-      console.log(req);
-      break;
+  try {
+    const req = await dataService.Req(CountriesEp);
+    switch (req.status) {
+      case 200:
+        const data = await req.json();
+        return data;
+      default:
+        toast.error(`Error: ${req.json().message}`);
+        return null;
+    }
+  } catch (error) {
+    console.log(error.message);
+    toast.error(
+      "An unexpected error has occured. Check your internet connection and try again."
+    );
+    return null;
   }
-  return [];
 }
 
 export default VolcanoList;
