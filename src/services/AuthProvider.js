@@ -30,14 +30,12 @@ function AuthProvider(props) {
   const [state, dispatch] = useReducer(AuthReducer, InitalState);
 
   useEffect(() => {
-    return () => {
-      clearSessionTimeout();
-      if (state.user !== null && state.user !== undefined) {
-        console.log("user set");
-        localStorage.setItem("user", encrypt(JSON.stringify(state.user)));
-        activateSessionTimer(state.user.expires_in);
-      }
-    };
+    clearSessionTimeout();
+    if (state.user !== null && state.user !== undefined) {
+      console.log("user set");
+      localStorage.setItem("user", encrypt(JSON.stringify(state.user)));
+      activateSessionTimer(state.user.expires_in);
+    }
   }, [state.user]);
 
   const clearSessionTimeout = () => {
@@ -46,8 +44,8 @@ function AuthProvider(props) {
 
   const activateSessionTimer = async (tokenTimeout) => {
     console.log(`Session expires in ${tokenTimeout} seconds`);
-    timeout = setTimeout(() => {
-      detachSession();
+    timeout = setTimeout(async () => {
+      await detachSession();
       toast.warning("Your session has expired. Please login again.");
     }, tokenTimeout * 1000);
   };
@@ -95,8 +93,6 @@ function AuthProvider(props) {
 
   const register = async (username, password) => {
     console.log("register");
-    //Add login promise here
-    dispatch({ type: "login_process" });
     const req = await dataService.Req(RegisterEp, {
       email: username,
       password: password,
@@ -121,7 +117,6 @@ function AuthProvider(props) {
 
   const detachSession = () => {
     localStorage.removeItem("user");
-    localStorage.clear();
     dispatch({ type: "logout" });
   };
 
