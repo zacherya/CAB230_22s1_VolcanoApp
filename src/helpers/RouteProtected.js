@@ -1,6 +1,6 @@
-import React from 'react'
-import { Route, Navigate } from 'react-router-dom'
-import { AuthConsumer } from '../services/AuthProvider'
+import React from "react";
+import { Route, Navigate } from "react-router-dom";
+import { AuthConsumer } from "../services/AuthProvider";
 
 // const RouteProtected = ({ element: Element, ...rest }) => (
 //   <AuthConsumer>
@@ -17,11 +17,10 @@ import { AuthConsumer } from '../services/AuthProvider'
 
 function RouteProtected({ redirectTo, children }) {
   <AuthConsumer>
-    {({ authenticated }) => (
+    {({ authenticated }) =>
       authenticated ? children : <Navigate to={redirectTo} />
-    )}
-  </AuthConsumer>
-  
+    }
+  </AuthConsumer>;
 }
 
-export default RouteProtected
+export default RouteProtected;

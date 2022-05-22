@@ -53,7 +53,7 @@ function AuthProvider(props) {
       }
       console.log("user set");
       localStorage.setItem("user", encrypt(JSON.stringify(state.user)));
-      activateSessionTimer(state.user.expires_in);
+      activateSessionTimer();
     }
   }, [state.user]);
 
@@ -61,8 +61,8 @@ function AuthProvider(props) {
     clearInterval(interval);
   };
 
-  const activateSessionTimer = async (tokenTimeout) => {
-    console.log(`Session expires in ${tokenTimeout} seconds`);
+  const activateSessionTimer = async () => {
+    console.log(`Session expires in ${state.user.expires_in} seconds`);
     interval = setInterval(async () => {
       if (state.user.expires_at < new Date().getTime()) {
         detachSession();

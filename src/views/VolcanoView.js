@@ -59,17 +59,34 @@ function VolcanoView() {
   const navigate = useNavigate();
 
   const preFetch = useEffect(() => {
+    return goFetch();
+  }, []);
+
+  function goFetch() {
+    fetchVolcano(id)
+      .then((data) => {
+        if (data === 404) {
+          navigate(`/Volcanoes`, { replace: true });
+          return;
+        }
+        setVolcanoData(data);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  }
+
+  const fetchOnAuthStateChange = useEffect(() => {
     return () => {
+      if (consumer.authenticated) setVolcanoData(undefined);
+
       setTimeout(() => {
         fetchVolcano(id)
-          .then((req) => {
-            if (req.status === 400) {
-              navigate(`../`, { replace: true });
+          .then((data) => {
+            if (data === 404) {
+              navigate(`/Volcanoes`, { replace: true });
               return;
             }
-            return req.json();
-          })
-          .then((data) => {
             setVolcanoData(data);
           })
           .catch((error) => {
@@ -77,27 +94,6 @@ function VolcanoView() {
           });
       }, 1000);
     };
-  }, []);
-
-  const fetchOnAuthStateChange = useEffect(() => {
-    if (consumer.authenticated) setVolcanoData(undefined);
-
-    setTimeout(() => {
-      fetchVolcano(id)
-        .then((req) => {
-          if (req.status === 400) {
-            navigate(`../`, { replace: true });
-            return;
-          }
-          return req.json();
-        })
-        .then((data) => {
-          setVolcanoData(data);
-        })
-        .catch((error) => {
-          setError(error.message);
-        });
-    }, 1000);
   }, [consumer.authenticated]);
 
   const loadingRequired = () => {
@@ -267,7 +263,7 @@ function VolcanoView() {
                     ],
                     datasets: [
                       {
-                        label: "Dataset 1",
+                        label: "No. of people",
                         data: [
                           volcanoData.population_5km,
                           volcanoData.population_10km,
@@ -292,12 +288,12 @@ async function fetchVolcano(country) {
   const req = await dataService.Req(VolcanoSpecificEp.specific(country));
   switch (req.status) {
     case 200:
-      return req;
+      return req.json();
     case 401:
       throw Error(401);
     case 404:
       toast.error("We couldn't find that volcano in the database!");
-      return [];
+      return 404;
     default:
       console.log(req);
       break;
