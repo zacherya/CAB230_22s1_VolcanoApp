@@ -24,7 +24,7 @@ const dataService = new DataService();
 const LoginEp = Endpoints().auth().login();
 const RegisterEp = Endpoints().auth().register();
 
-let timeout;
+var interval;
 
 function AuthProvider(props) {
   const [state, dispatch] = useReducer(AuthReducer, InitalState);
@@ -32,6 +32,13 @@ function AuthProvider(props) {
   useEffect(() => {
     clearSessionTimeout();
     if (state.user !== null && state.user !== undefined) {
+      if (state.user.expires_at < new Date().getTime()) {
+        toast.warning(
+          "Your session had expired while you were away. Please login again."
+        );
+        detachSession();
+        return;
+      }
       console.log("user set");
       localStorage.setItem("user", encrypt(JSON.stringify(state.user)));
       activateSessionTimer(state.user.expires_in);
@@ -39,15 +46,17 @@ function AuthProvider(props) {
   }, [state.user]);
 
   const clearSessionTimeout = () => {
-    clearTimeout(timeout);
+    clearInterval(interval);
   };
 
   const activateSessionTimer = async (tokenTimeout) => {
     console.log(`Session expires in ${tokenTimeout} seconds`);
-    timeout = setTimeout(async () => {
-      await detachSession();
-      toast.warning("Your session has expired. Please login again.");
-    }, tokenTimeout * 1000);
+    interval = setInterval(async () => {
+      if (state.user.expires_at < new Date().getTime()) {
+        detachSession();
+        toast.warning("Your session has expired. Please login again.");
+      }
+    }, 2000);
   };
 
   const triggerLoginModal = () => {
@@ -74,6 +83,7 @@ function AuthProvider(props) {
             token: jwt.token,
             token_type: jwt.token_type,
             expires_in: jwt.expires_in,
+            expires_at: new Date().getTime() + jwt.expires_in * 1000,
           },
         });
         toast.success(`Welcome ${username ?? "Unknown user"}`);
@@ -88,7 +98,6 @@ function AuthProvider(props) {
         console.log(req);
         break;
     }
-    // activateSessionTimer(5000*10);
   };
 
   const register = async (username, password) => {
@@ -112,12 +121,12 @@ function AuthProvider(props) {
         console.log(req);
         break;
     }
-    // activateSessionTimer(5000*10);
   };
 
   const detachSession = () => {
     localStorage.removeItem("user");
     dispatch({ type: "logout" });
+    clearSessionTimeout();
   };
 
   const logout = () => {

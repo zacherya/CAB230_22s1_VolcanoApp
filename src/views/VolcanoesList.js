@@ -1,6 +1,13 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { AgGridReact } from "ag-grid-react";
-import { Col, Row, Container, Button, FormControl } from "react-bootstrap";
+import {
+  Col,
+  Row,
+  Container,
+  Button,
+  FormControl,
+  Spinner,
+} from "react-bootstrap";
 import Endpoints from "../helpers/Endpoints";
 import DataService from "../services/DataRequestService";
 import { toast } from "react-toastify";
@@ -15,6 +22,7 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const CountriesEp = Endpoints().countries().all();
 const VolcanoListEp = Endpoints().volcanoes().all();
@@ -30,13 +38,15 @@ function VolcanoList() {
   const [volcanoData, setVolcanoData] = useState();
   const [countries, setCountries] = useState();
 
+  const [error, setError] = useState(null);
+
   const gridRef = useRef();
   const dropdownRef = useRef();
 
   const [volcanoHeaders] = useState([
-    { field: "name" },
-    { field: "region" },
-    { field: "subregion" },
+    { field: "name", minWidth: 200, flex: 1, sortable: true },
+    { field: "region", minWidth: 200, flex: 1, sortable: true },
+    { field: "subregion", minWidth: 200, flex: 1, sortable: true },
   ]);
 
   const searchStateRef = useRef();
@@ -57,12 +67,22 @@ function VolcanoList() {
   rangeStateRef.current = selectedRange;
   countryStateRef.current = selectedCountry;
 
+  const loadingRequired = () => {
+    if (error !== null) return false;
+    if (volcanoData === undefined || countries === undefined) return true;
+    return false;
+  };
+
   const preFetch = useEffect(() => {
     return () => {
-      fetchCountries().then((data) => {
-        setCountries(data);
-        onSelectCountry(data[0]);
-      });
+      fetchCountries()
+        .then((data) => {
+          setCountries(data);
+          onSelectCountry(data[0]);
+        })
+        .catch((error) => {
+          setError(500);
+        });
     };
   }, []);
 
@@ -102,6 +122,10 @@ function VolcanoList() {
     gridRef.current.api.setQuickFilter(event.target.value);
   }, []);
 
+  if (error !== null) {
+    return <DynamicError error={error} />;
+  }
+
   return (
     <Container
       className="text-start"
@@ -116,7 +140,6 @@ function VolcanoList() {
             </div>
             <div className="filter-widget">
               <DropdownList
-                // defaultValue={countries[0]}
                 ref={dropdownRef}
                 data={countries}
                 value={selectedCountry}
@@ -127,7 +150,11 @@ function VolcanoList() {
           <Row>
             <div className="filter-header mb-1 d-flex justify-content-between align-items-center">
               <h6 className="mb-0">Populated within</h6>
-              <Button variant="link" onClick={() => onSelectRange(null)}>
+              <Button
+                variant="warning"
+                size="sm"
+                onClick={() => onSelectRange(null)}
+              >
                 Clear
               </Button>
             </div>
@@ -166,10 +193,13 @@ function VolcanoList() {
               columnDefs={volcanoHeaders}
               onSelectionChanged={onSelectionChanged}
               rowSelection={"single"}
+              pagination={true}
+              paginationAutoPageSize={true}
             ></AgGridReact>
           </div>
         </Col>
       </Row>
+      <LoadingSpinner show={loadingRequired()} />
     </Container>
   );
 }
@@ -198,22 +228,14 @@ async function fetchVolcanos(country, range) {
 }
 
 async function fetchCountries() {
-  try {
-    const req = await dataService.Req(CountriesEp);
-    switch (req.status) {
-      case 200:
-        const data = await req.json();
-        return data;
-      default:
-        toast.error(`Error: ${req.json().message}`);
-        return null;
-    }
-  } catch (error) {
-    console.log(error.message);
-    toast.error(
-      "An unexpected error has occured. Check your internet connection and try again."
-    );
-    return null;
+  const req = await dataService.Req(CountriesEp);
+  switch (req.status) {
+    case 200:
+      const data = await req.json();
+      return data;
+    default:
+      toast.error(`Error: ${req.json().message}`);
+      return null;
   }
 }
 

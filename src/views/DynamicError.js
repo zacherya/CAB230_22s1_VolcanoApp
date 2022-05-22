@@ -12,7 +12,7 @@ function DynamicError(props) {
       </div>
       <div>
         Oh no, we've had a problem fulfilling your request. Please try again
-        later or click <Link to="">here</Link> to go back home.
+        later or click <Link to="/">here</Link> to go back home.
       </div>
     </div>
   );
