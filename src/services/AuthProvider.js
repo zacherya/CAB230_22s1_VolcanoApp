@@ -7,15 +7,27 @@ import Endpoints from "../helpers/Endpoints";
 
 import { encrypt, decrypt } from "../helpers/Crypto";
 
-const InitalState = {
-  user: localStorage.getItem("user")
-    ? JSON.parse(decrypt(localStorage.getItem("user")))
-    : null,
-  isLoggingIn: false,
-  error: false,
-  showLoginModal: false,
-  showRegisterModal: false,
-};
+var InitalState;
+try {
+  InitalState = {
+    user: localStorage.getItem("user")
+      ? JSON.parse(decrypt(localStorage.getItem("user")))
+      : null,
+    isLoggingIn: false,
+    error: false,
+    showLoginModal: false,
+    showRegisterModal: false,
+  };
+} catch {
+  localStorage.removeItem("user");
+  InitalState = {
+    user: null,
+    isLoggingIn: false,
+    error: false,
+    showLoginModal: false,
+    showRegisterModal: false,
+  };
+}
 
 const AuthContext = createContext(InitalState);
 

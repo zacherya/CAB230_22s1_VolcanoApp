@@ -1,7 +1,7 @@
-import AES from 'crypto-js/aes';
-import { enc } from 'crypto-js';
+import AES from "crypto-js/aes";
+import { enc } from "crypto-js";
 
-const secret = 'cab230';
+const secret = "cab230";
 
 function encrypt(string) {
   const ciphertext = AES.encrypt(string, secret);
@@ -9,7 +9,12 @@ function encrypt(string) {
 }
 function decrypt(string) {
   const decodedStr = decodeURIComponent(string);
-  return AES.decrypt(decodedStr, secret).toString(enc.Utf8);
+  try {
+    const decrypted = AES.decrypt(decodedStr, secret).toString(enc.Utf8);
+    return decrypted;
+  } catch {
+    return null;
+  }
 }
 
-export {encrypt, decrypt};
+export { encrypt, decrypt };
