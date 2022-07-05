@@ -1,70 +1,69 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![Logo](data:image/png;base64,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)
 
-## Available Scripts
 
-In the project directory, you can run:
+# QUT CAB230 2022 Semester 1 Web Computing "Volcano App"
 
-### `npm start`
+React web app that communicates with a private VolcanoAPI, developed in Visual Studio Code bootstrapped using [Create React App](https://github.com/facebook/create-react-app).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Features
 
-### `npm run build`
+- Login and signup functionality with whole app auth context
+- Hidden features based on authentication
+- Reactive components that instantly update on state change
+- Cross module dependancy and communication
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Technologies
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+**Client:** React, AG Grid React, Bootstrap, ChartJS, CryptoJS, Pigeon Maps, React Router, React Toastify
 
-### `npm run eject`
+**Server:** See [VolcanoAPI project](https://github.com/zacherya/CAB230_22s1_VolcanoAPI)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Run Locally
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Clone the project
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+  git clone https://github.com/zacherya/CAB230_22s1_VolcanoApp
+```
 
-## Learn More
+Go to the project directory
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+  cd CAB230_22s1_VolcanoApp
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Install dependencies
 
-### Code Splitting
+```bash
+  npm install
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Start the server
 
-### Analyzing the Bundle Size
+```bash
+  npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-### Making a Progressive Web App
+## Build for production
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+To build this project for production run
 
-### Advanced Configuration
+```bash
+  npm run build
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+This will output to the `/build` directory.
 
-### Deployment
+## Acknowledgements
+⚫🔴🟡 I acknowledge the Turrbal and Yugara, as the First Nations owners of the lands where this project was developed. I pay respects to their Elders, lores, customs and creation spirits. I recognise that these lands have always been places of teaching, research and learning. 
+ - [QUT Web Computing](https://www.qut.edu.au/study/unit?unitCode=CAB230)
+## Authors
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- [@zacherya](https://www.github.com/zacherya)
